@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The End of Blind Faith — 0G Labs | ETHDenver 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FEFEFE;--bg-alt:#F8F6FB;--bg-card:#FFFFFF;
+  --purple:#9200E1;--purple-light:#B75FFF;--purple-soft:rgba(146,0,225,0.06);
+  --purple-border:rgba(146,0,225,0.15);--purple-glow:rgba(146,0,225,0.08);
+  --text:#0A0A0A;--text-2:#444;--text-3:#888;--text-4:#bbb;
+  --border:#E8E4EE;--border-light:#F0ECF4;
+  --red:#E83E3E;--red-soft:rgba(232,62,62,0.08);--red-border:rgba(232,62,62,0.2);
+  --green:#16A34A;--green-soft:rgba(22,163,74,0.08);
+  --font:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html,body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font);overflow:hidden;height:100%;width:100%;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===== SLIDE SYSTEM ===== */
+.slide{
+  display:none;position:absolute;inset:0;
+  flex-direction:column;padding:64px 100px 80px;overflow:hidden;
+}
+.slide.active{display:flex}
+.slide.center{justify-content:center;align-items:center;text-align:center;padding:80px 120px}
+
+/* Subtle grid */
+.slide::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(146,0,225,0.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;
+}
+/* Top glow */
+.slide::after{
+  content:'';position:absolute;top:-400px;left:50%;transform:translateX(-50%);
+  width:1200px;height:700px;
+  background:radial-gradient(ellipse,rgba(146,0,225,0.05) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* Dark slides */
+.slide.dark{background:#050505;color:#FEFEFE}
+.slide.dark::before{
+  background-image:radial-gradient(circle,rgba(146,0,225,0.08) 1px,transparent 1px);
+}
+.slide.dark::after{
+  background:radial-gradient(ellipse at 50% 30%,rgba(146,0,225,0.2) 0%,transparent 60%);
+  top:-200px;
+}
+
+.slide>*{position:relative;z-index:1}
+
+/* ===== TYPOGRAPHY ===== */
+h1{font-size:62px;font-weight:300;line-height:1.1;letter-spacing:-2px;max-width:1000px}
+h1 strong{font-weight:700}
+h2{font-size:44px;font-weight:300;line-height:1.15;letter-spacing:-1.5px;max-width:900px}
+h2 strong{font-weight:700}
+h3{font-size:22px;font-weight:500;letter-spacing:-0.3px}
+.subtitle{font-size:20px;color:var(--text-2);max-width:640px;line-height:1.6;margin-top:16px;font-weight:300}
+.accent{color:var(--purple)}
+.mono{font-family:var(--mono)}
+
+/* ===== TAG / BADGE ===== */
+.tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--purple-soft);border:1px solid var(--purple-border);
+  font-family:var(--mono);font-size:11px;padding:6px 16px;border-radius:6px;
+  text-transform:uppercase;letter-spacing:2px;color:var(--purple);
+  margin-bottom:24px;font-weight:500;
+}
+.tag::before{content:'';width:6px;height:6px;background:var(--purple);border-radius:50%}
+.slide.dark .tag{border-color:rgba(146,0,225,0.3);background:rgba(146,0,225,0.1);color:var(--purple-light)}
+
+/* ===== DIVIDER ===== */
+.divider{width:48px;height:2px;background:var(--purple);margin:24px 0;border-radius:1px;opacity:0.6}
+.center .divider{margin:24px auto}
+
+/* ===== STATS ===== */
+.stat{font-family:var(--mono);font-size:56px;font-weight:700;color:var(--purple);line-height:1;letter-spacing:-2px}
+.stat-label{
+  font-family:var(--mono);font-size:11px;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:2px;margin-top:8px;
+}
+.stat-row{display:flex;gap:64px;flex-wrap:wrap}
+.center .stat-row{justify-content:center}
+.stat-block{text-align:center}
+
+/* ===== SOURCE LINE ===== */
+.source{
+  position:absolute;bottom:28px;left:100px;right:100px;
+  font-family:var(--mono);font-size:11px;color:var(--text-4);
+  letter-spacing:0.5px;z-index:2;line-height:1.4;
+}
+.slide.dark .source{color:rgba(254,254,254,0.2)}
+
+/* ===== CARDS ===== */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:28px 32px;
+  transition:border-color 0.2s;
+}
+.card:hover{border-color:var(--purple-border)}
+.card-grid{display:grid;gap:16px;margin-top:32px}
+.card-grid.cols-2{grid-template-columns:1fr 1fr}
+.card-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.card-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.card-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--purple);margin-bottom:12px;font-weight:600}
+.card-value{font-size:28px;font-weight:700;letter-spacing:-1px}
+.card-desc{font-size:14px;color:var(--text-2);margin-top:8px;line-height:1.5;font-weight:400}
+.card-source{font-family:var(--mono);font-size:11px;color:var(--text-4);margin-top:12px;text-transform:uppercase;letter-spacing:1px}
+
+/* ===== STACK ===== */
+.stack{display:flex;flex-direction:column;gap:4px;margin-top:28px;width:100%;max-width:600px}
+.stack-layer{
+  display:flex;align-items:center;gap:16px;
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:12px 20px;border-radius:8px;transition:all 0.2s;
+}
+.stack-layer:hover{border-color:var(--purple-border);background:var(--purple-soft)}
+.stack-layer.hl{border-color:var(--purple-border);background:var(--purple-soft)}
+.stack-layer.dashed{border-style:dashed;border-color:var(--red-border);background:var(--red-soft);opacity:0.7}
+.stack-icon{font-family:var(--mono);font-size:10px;color:var(--purple);min-width:72px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+.stack-name{font-size:15px;font-weight:600;color:var(--text)}
+
+/* ===== PILLS ===== */
+.pill{
+  display:inline-block;background:var(--purple-soft);border:1px solid var(--purple-border);
+  color:var(--purple);font-size:14px;padding:8px 20px;border-radius:999px;
+  font-family:var(--mono);font-weight:500;letter-spacing:0.5px;
+}
+
+/* ===== PARTNER ROW ===== */
+.partner-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.partner-item{
+  font-family:var(--mono);font-size:11px;color:var(--text-2);
+  padding:8px 14px;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg-card);font-weight:500;letter-spacing:0.3px;
+}
+
+/* ===== TABLE ===== */
+.compare-table{
+  width:100%;max-width:860px;border-collapse:collapse;margin-top:28px;
+  font-size:15px;text-align:left;
+}
+.compare-table th{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text-4);padding:12px 20px;border-bottom:2px solid var(--border);font-weight:600;
+}
+.compare-table td{padding:12px 20px;border-bottom:1px solid var(--border-light)}
+.compare-table .col-legacy{color:var(--text-3);font-weight:400}
+.compare-table .col-0g{color:var(--purple);font-weight:600}
+.compare-table td:first-child{
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text-2);font-weight:600;width:120px;
+}
+.compare-table .col-src{font-family:var(--mono);font-size:11px;color:var(--text-4);text-transform:uppercase;letter-spacing:0.5px;width:140px}
+.compare-table tbody tr:hover td{background:var(--purple-soft)}
+
+/* ===== BAR CHART ===== */
+.bar-chart{display:flex;flex-direction:column;gap:10px;margin-top:20px;width:100%}
+.bar-row{display:flex;align-items:center;gap:14px}
+.bar-label{font-family:var(--mono);font-size:13px;color:var(--text-3);min-width:48px;text-align:right;font-weight:500}
+.bar-track{flex:1;height:32px;background:var(--bg-alt);border-radius:6px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:14px;
+  font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;
+  transition:width 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.bar-fill.purple{background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+.bar-fill.red{background:linear-gradient(90deg,#E83E3E,#F06060)}
+.bar-fill.gray{background:#ccc}
+.bar-value{font-family:var(--mono);font-size:13px;color:var(--text-2);font-weight:600;min-width:60px}
+
+/* ===== COMPARISON BARS ===== */
+.vs-chart{display:flex;flex-direction:column;gap:8px;margin-top:20px;max-width:500px}
+.vs-row{display:flex;align-items:center;gap:12px}
+.vs-label{font-size:13px;color:var(--text-2);min-width:100px;font-weight:500}
+.vs-bar{height:28px;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;min-width:40px}
+
+/* ===== TRUST COLLAPSE ===== */
+.trust-bars{display:flex;gap:20px;align-items:flex-end;height:140px;margin-top:16px}
+.trust-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.trust-bar{width:100%;border-radius:6px 6px 0 0;display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:8px;font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;min-height:20px}
+.trust-year{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:1px}
+.trust-arrow{font-size:20px;color:var(--red);align-self:center;margin:0 -4px}
+
+/* ===== CASCADE ===== */
+.cascade{display:flex;align-items:center;gap:0;margin-top:20px;flex-wrap:wrap}
+.cascade-step{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+  padding:10px 16px;text-align:center;min-width:120px;
+}
+.cascade-step .val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--purple)}
+.cascade-step .lbl{font-size:11px;color:var(--text-3);margin-top:2px}
+.cascade-step.danger{border-color:var(--red-border);background:var(--red-soft)}
+.cascade-step.danger .val{color:var(--red)}
+.cascade-arrow{font-size:18px;color:var(--text-4);padding:0 4px}
+
+/* ===== PROGRESS INDICATOR ===== */
+.progress-ring{display:flex;align-items:center;gap:12px}
+.progress-ring .ring{width:48px;height:48px;border-radius:50%;border:4px solid var(--border);position:relative}
+.progress-ring .ring::after{content:'';position:absolute;inset:3px;border-radius:50%;
+  border:4px solid transparent;border-top-color:var(--purple);transform:rotate(45deg)}
+
+/* ===== CTA ===== */
+.cta-btn{
+  display:inline-block;background:var(--purple);color:#fff;
+  font-size:20px;font-weight:600;padding:16px 48px;border-radius:12px;
+  text-decoration:none;letter-spacing:0.3px;
+  box-shadow:0 4px 24px rgba(146,0,225,0.25);transition:all 0.2s;
+}
+.cta-btn:hover{box-shadow:0 8px 40px rgba(146,0,225,0.4);transform:translateY(-2px)}
+
+/* ===== DARK SLIDE TEXT ===== */
+.slide.dark .subtitle{color:rgba(254,254,254,0.5)}
+.slide.dark h3{color:rgba(254,254,254,0.6)}
+.slide.dark .stat-label{color:rgba(254,254,254,0.35)}
+.dark-card{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:24px 32px;text-align:center;
+}
+.dark-card h3{color:#fff !important;font-size:20px;font-weight:600}
+.dark-card p{font-size:13px;color:rgba(254,254,254,0.4);margin-top:4px}
+
+/* ===== NAVIGATION ===== */
+.nav{position:fixed;bottom:24px;right:32px;z-index:100;display:flex;gap:6px}
+.nav button{
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text-3);padding:8px 18px;border-radius:8px;cursor:pointer;
+  font-family:var(--mono);font-size:12px;font-weight:500;transition:all 0.2s;
+}
+.nav button:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+.slide-counter{
+  position:fixed;bottom:28px;left:32px;z-index:100;
+  font-family:var(--mono);font-size:12px;color:var(--text-4);
+}
+.og-logo{
+  position:fixed;top:24px;left:32px;z-index:100;
+  width:50px;height:24px;color:rgba(10,10,10,0.65);
+  transition:color 0.3s;
+}
+.og-logo svg{width:100%;height:100%}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--purple);z-index:300;transition:width 0.4s ease}
+
+/* Notes */
+.notes-panel{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);padding:16px 36px;z-index:200;max-height:180px;overflow-y:auto;
+}
+.notes-panel.visible{display:block}
+.notes-panel h4{font-family:var(--mono);font-size:10px;color:var(--purple);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.notes-panel p{font-size:14px;color:var(--text-2);line-height:1.7;max-width:900px}
+.notes-toggle{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text-4);padding:5px 14px;border-radius:6px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.5px;
+}
+.notes-toggle:hover{color:var(--purple);border-color:var(--purple)}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes growWidth{from{width:0}to{width:var(--target-w)}}
+@keyframes growHeight{from{height:0}to{height:var(--target-h)}}
+.slide.active>*{animation:fadeUp 0.5s ease both}
+.slide.active>*:nth-child(1){animation-delay:0s}
+.slide.active>*:nth-child(2){animation-delay:0.05s}
+.slide.active>*:nth-child(3){animation-delay:0.1s}
+.slide.active>*:nth-child(4){animation-delay:0.15s}
+.slide.active>*:nth-child(5){animation-delay:0.2s}
+.slide.active>*:nth-child(6){animation-delay:0.25s}
+.slide.active>*:nth-child(7){animation-delay:0.3s}
+.slide.active>*:nth-child(8){animation-delay:0.35s}
+
+/* Layout helpers */
+.flex{display:flex}.gap-16{gap:16px}.gap-24{gap:24px}.gap-32{gap:32px}.gap-48{gap:48px}
+.flex-1{flex:1}.items-start{align-items:flex-start}.items-center{align-items:center}
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}
+.mt-24{margin-top:24px}.mt-28{margin-top:28px}.mt-32{margin-top:32px}.mt-40{margin-top:40px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px;width:100%}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="og-logo"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 50 24" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true" role="img"><path d="M50.0009 12.6136C49.6855 18.9497 44.3897 23.9913 37.9033 23.9913C31.214 23.9913 25.791 18.6291 25.791 12.0146C25.791 5.40009 31.214 0.0380859 37.9033 0.0380859C44.1841 0.0380859 49.3483 4.76491 49.956 10.8171H44.4555C43.8858 7.75086 41.169 5.42761 37.9035 5.42761C34.2241 5.42761 31.2416 8.37672 31.2416 12.0146C31.2416 15.6527 34.2241 18.6018 37.9035 18.6018C40.7281 18.6018 43.1418 16.8636 44.111 14.4101H34.8753V12.6136H50.0009Z" fill="currentColor"/><path d="M3.98642 20.8584C8.74078 25.1181 16.0905 24.9803 20.6772 20.4453C25.4072 15.7681 25.4072 8.18505 20.6772 3.50781C15.9469 -1.16927 8.27782 -1.16927 3.54764 3.50781C-0.893505 7.8992 -1.16488 14.8521 2.73348 19.5567L6.62297 15.7108C4.83311 13.1445 5.09269 9.60205 7.40183 7.31886C10.0034 4.7464 14.2215 4.7464 16.8231 7.31886C19.4245 9.89129 19.4245 14.062 16.8231 16.6345C14.8257 18.6094 11.8757 19.0682 9.43583 18.0106L15.9665 11.5531L14.6819 10.2829L3.98642 20.8584Z" fill="currentColor"/></svg></div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: TITLE (DARK)                                        -->
+<!-- ============================================================ -->
+<div class="slide dark center active" data-notes="[0:00–1:40] Walk on stage. Pause. The end of blind faith. We are in a $9.1B market growing 40%+ YoY (Fortune Business Insights). $225B in global VC flowing to AI. Nearly all built on architecture that cannot prove what it does. I am Jake Salerno, VP GTM at 0G Labs.">
+  <span class="tag">ETHDenver 2026 &nbsp;·&nbsp; Scaling Summit</span>
+  <h1>The End of <strong class="accent">Blind Faith</strong></h1>
+  <p class="subtitle" style="color:rgba(254,254,254,0.45)">Architecting Truth in the Age of Autonomy</p>
+  <div class="divider" style="margin:28px auto"></div>
+  <p style="font-size:18px;color:rgba(254,254,254,0.5);font-weight:300"><strong style="color:#fff;font-weight:600">Jake Salerno</strong> &nbsp;|&nbsp; VP of GTM, 0G Labs</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: THE CONFLICT                                        -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[1:40–3:20] $9.1B agentic AI market (Fortune BI), 40%+ CAGR. Trust collapsed from 43% to 27% (Capgemini). Anthropic arXiv research: RL agents hack their own reward functions. $3.4B stolen in crypto exploits 2025 (Chainalysis). $1.8B malicious MEV. 96:1 non-human to human identities (Astrix).">
+  <span class="tag">The Conflict</span>
+  <h2>Reputation Is a <strong class="accent">Single Point of Failure</strong></h2>
+  <p class="subtitle">In the Agent Economy, trust is a vulnerability.</p>
+
+  <div class="two-col" style="margin-top:36px">
+    <!-- Left: Market Growth -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">Agentic AI Market</h3>
+      <div class="bar-chart" style="margin-top:16px">
+        <div class="bar-row">
+          <span class="bar-label">2024</span>
+          <div class="bar-track"><div class="bar-fill purple" style="width:45%">$4.1B</div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">2025</span>
+          <div class="bar-track"><div class="bar-fill purple" style="width:71%">$6.5B</div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">2026</span>
+          <div class="bar-track"><div class="bar-fill purple" style="width:100%">$9.1B</div></div>
+        </div>
+      </div>
+
+      <!-- Trust collapse -->
+      <div style="margin-top:24px;background:var(--red-soft);border:1px solid var(--red-border);border-radius:10px;padding:16px 20px">
+        <h3 style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--red);font-weight:600;margin-bottom:8px">Trust in Autonomous AI — Collapsing</h3>
+        <div class="trust-bars" style="height:140px">
+          <div class="trust-col">
+            <div class="trust-bar" style="height:120px;background:linear-gradient(var(--purple),var(--purple-light))">43%</div>
+            <span class="trust-year">2024</span>
+          </div>
+          <span class="trust-arrow">→</span>
+          <div class="trust-col">
+            <div class="trust-bar" style="height:90px;background:linear-gradient(#c060e0,#d090f0)">37%</div>
+            <span class="trust-year">Mid</span>
+          </div>
+          <span class="trust-arrow">→</span>
+          <div class="trust-col">
+            <div class="trust-bar" style="height:64px;background:linear-gradient(var(--red),#F06060)">27%</div>
+            <span class="trust-year">2025</span>
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--red);margin-top:8px;letter-spacing:1px;text-transform:uppercase">Capgemini Research Institute</div>
+      </div>
+    </div>
+
+    <!-- Right: Key Stats -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">The Damage</h3>
+      <div class="card-grid cols-1" style="grid-template-columns:1fr;gap:12px;margin-top:16px">
+        <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
+          <div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--red);letter-spacing:-1px">$3.4B</div>
+          <div>
+            <div style="font-size:14px;font-weight:600">Crypto Exploits (2025)</div>
+            <div class="card-source">Chainalysis Crypto Crime Report</div>
+          </div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
+          <div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--red);letter-spacing:-1px">$1.8B</div>
+          <div>
+            <div style="font-size:14px;font-weight:600">Malicious MEV Since 2020</div>
+            <div class="card-source">Flashbots Research</div>
+          </div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:20px;padding:20px 24px">
+          <div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--purple);letter-spacing:-1px">96:1</div>
+          <div>
+            <div style="font-size:14px;font-weight:600">Non-Human to Human IDs</div>
+            <div class="card-source">Astrix Security 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="source">Sources: Fortune Business Insights (2026) · Capgemini Research Institute · Chainalysis Crypto Crime Report 2025 · Astrix Security · Anthropic arXiv (Nov 2025)</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: INFRASTRUCTURE GAP                                  -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[3:20–5:00] Builders cobble together 5 different protocols. Andreessen Horowitz: inference costs consume 60-80% of opex. A single agentic request triggers 5-20 inferences. One company: $29/month customers generating $44 in inference costs. 40%+ MoM cost growth at scale is unsustainable.">
+  <span class="tag">The Gap</span>
+  <h2>Point Solutions Create <strong class="accent">Complexity Debt</strong></h2>
+
+  <div class="two-col" style="margin-top:32px">
+    <!-- Left: Cost cascade -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">The Economics Are Brutal</h3>
+      <div class="card mt-16" style="padding:20px 24px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="vs-bar" style="width:75%;background:linear-gradient(90deg,var(--red),#F06060)">60–80%</div>
+          <span style="font-size:13px;color:var(--text-2);font-weight:500">Inference share of opex</span>
+        </div>
+        <div class="card-source mt-8">Andreessen Horowitz</div>
+      </div>
+
+      <div class="cascade mt-20">
+        <div class="cascade-step"><div class="val">1</div><div class="lbl">Agent Request</div></div>
+        <span class="cascade-arrow">→</span>
+        <div class="cascade-step"><div class="val">5–20</div><div class="lbl">Inferences</div></div>
+        <span class="cascade-arrow">→</span>
+        <div class="cascade-step danger"><div class="val">$44</div><div class="lbl">Cost / user</div></div>
+        <span class="cascade-arrow">→</span>
+        <div class="cascade-step danger"><div class="val">40%+</div><div class="lbl">MoM growth</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-3);margin-top:12px">Revenue per user: $29/mo — inference cost: $44/mo</p>
+    </div>
+
+    <!-- Right: Fragmented stack -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">Today's Stack: 5 Protocols</h3>
+      <div class="stack mt-16">
+        <div class="stack-layer"><span class="stack-icon">Storage</span><span class="stack-name">Single-purpose storage protocol</span></div>
+        <div class="stack-layer"><span class="stack-icon">Compute</span><span class="stack-name">Single-purpose compute network</span></div>
+        <div class="stack-layer"><span class="stack-icon">DA</span><span class="stack-name">Single-purpose DA layer</span></div>
+        <div class="stack-layer"><span class="stack-icon">Chain</span><span class="stack-name">General-purpose L1 / L2</span></div>
+        <div class="stack-layer dashed"><span class="stack-icon" style="color:var(--red)">Identity</span><span class="stack-name" style="color:var(--red);opacity:0.7">??? (doesn't exist)</span></div>
+      </div>
+      <p style="font-size:14px;color:var(--text-2);margin-top:14px;font-weight:500">5 protocols · 5 token economies · 5 points of failure</p>
+      <p style="font-size:13px;color:var(--red);margin-top:6px;font-weight:500">Each integration multiplies the cost cascade on the left.</p>
+    </div>
+  </div>
+
+  <div class="source">Source: Andreessen Horowitz "The Cost of AI Inference" · Industry analysis</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: THE 0G SOLUTION — DeAIOS                            -->
+<!-- ============================================================ -->
+<div class="slide center" data-notes="[5:00–6:40] 0G: The Decentralized AI Operating System. One integrated platform. Storage, Compute, DA, and Chain — purpose-built for AI. Mainnet live since September 2025. 300+ projects. $325M+ raised.">
+  <span class="tag">The Solution</span>
+  <h2>The Decentralized <strong class="accent">AI Operating System</strong></h2>
+  <p class="subtitle">One integrated stack. Purpose-built for AI.</p>
+
+  <div class="stack mt-28" style="max-width:680px">
+    <div class="stack-layer hl" style="padding:16px 24px"><span class="stack-icon">Apps</span><span class="stack-name">Autonomous AI Applications + Service Marketplace</span></div>
+    <div class="stack-layer" style="padding:16px 24px"><span class="stack-icon">Trust</span><span class="stack-name">Alignment Nodes · Governance · Identity</span></div>
+    <div class="stack-layer" style="padding:16px 24px"><span class="stack-icon">Network</span><span class="stack-name">Chain (Settlement) + DA (Provenance) — 11K+ TPS, 50 Gbps</span></div>
+    <div class="stack-layer" style="padding:16px 24px"><span class="stack-icon">Infra</span><span class="stack-name">Compute (Training, Inference) + Storage (Datasets, Models)</span></div>
+  </div>
+
+  <div class="stat-row mt-32" style="gap:48px">
+    <div class="stat-block"><div class="stat" style="font-size:36px">$325M+</div><div class="stat-label">Raised</div></div>
+    <div class="stat-block"><div class="stat" style="font-size:36px">300+</div><div class="stat-label">Projects</div></div>
+    <div class="stat-block"><div class="stat" style="font-size:36px">Sept 2025</div><div class="stat-label">Mainnet Live</div></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: 0G STORAGE                                          -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[6:40–8:20] 0G Storage: 95% cost savings vs AWS S3. Real deployment: $100K/month reduced to $18K. Verifiable permanence: cryptographic proof data hasn't been tampered with. 80-90% cost reduction vs traditional cloud.">
+  <span class="tag">0G Storage</span>
+  <h2>Agent Memory, <strong class="accent">Verified</strong></h2>
+  <p class="subtitle">Training sets. Model weights. Agent memory. Decentralized and cryptographically secured.</p>
+
+  <div class="two-col" style="margin-top:36px">
+    <!-- Left: Cost comparison -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">Monthly Cloud Storage Cost</h3>
+      <div class="vs-chart mt-16">
+        <div class="vs-row">
+          <span class="vs-label" style="color:var(--text-3)">AWS S3</span>
+          <div class="vs-bar" style="width:100%;background:linear-gradient(90deg,#ccc,#aaa)">$100K/mo</div>
+        </div>
+        <div class="vs-row">
+          <span class="vs-label" style="color:var(--purple);font-weight:600">0G Storage</span>
+          <div class="vs-bar" style="width:5%;background:linear-gradient(90deg,var(--purple),var(--purple-light));min-width:80px">$5K/mo</div>
+        </div>
+      </div>
+      <div class="pill mt-20" style="font-size:20px;padding:12px 28px;font-weight:700">95% Cost Savings</div>
+      <div class="card-source mt-12">0G Labs benchmarks vs AWS S3 pricing (us-east-1)</div>
+    </div>
+
+    <!-- Right: Features -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">What You Get</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+        <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:14px">
+          <span style="color:var(--purple);font-size:18px;font-weight:700">✓</span>
+          <div><div style="font-weight:600;font-size:15px">Verifiable Permanence</div><div style="font-size:13px;color:var(--text-3)">Cryptographic proof of data integrity</div></div>
+        </div>
+        <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:14px">
+          <span style="color:var(--purple);font-size:18px;font-weight:700">✓</span>
+          <div><div style="font-weight:600;font-size:15px">Tamper-Proof</div><div style="font-size:13px;color:var(--text-3)">Immutable storage with erasure coding</div></div>
+        </div>
+        <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:14px">
+          <span style="color:var(--purple);font-size:18px;font-weight:700">✓</span>
+          <div><div style="font-weight:600;font-size:15px">Decentralized Redundancy</div><div style="font-size:13px;color:var(--text-3)">No single point of failure</div></div>
+        </div>
+        <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:14px">
+          <span style="color:var(--purple);font-size:18px;font-weight:700">✓</span>
+          <div><div style="font-weight:600;font-size:15px">80–90% Cost Reduction</div><div style="font-size:13px;color:var(--text-3)">vs. traditional cloud providers</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="source">Source: 0G Labs benchmarks vs AWS S3 pricing (us-east-1) · Production deployment data</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: 0G COMPUTE                                          -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[8:20–10:00] 0G Compute: trustless, cryptographically verified. TEEs for sub-second, ZKML for cryptographic proof, optimistic for throughput. DiLoCoX: trained 107B parameter model across decentralized network with China Mobile. Published on arXiv.">
+  <span class="tag">0G Compute</span>
+  <h2>Trustless <strong class="accent">Inference</strong></h2>
+  <p class="subtitle">You don't have to trust that the model ran correctly — you can prove it.</p>
+
+  <div class="two-col" style="margin-top:36px">
+    <!-- Left: DiLoCoX -->
+    <div>
+      <div class="card" style="border-color:var(--purple-border);background:var(--purple-soft);padding:32px">
+        <div class="card-title">DiLoCoX · Published on arXiv</div>
+        <div style="font-family:var(--mono);font-size:56px;font-weight:700;color:var(--purple);letter-spacing:-2px">107B</div>
+        <div style="font-size:16px;font-weight:600;margin-top:8px">Parameter Model</div>
+        <div style="font-size:14px;color:var(--text-2);margin-top:8px;line-height:1.5">First decentralized training at this scale.<br>Trained with China Mobile across a distributed network.</div>
+        <div class="card-source mt-12">arXiv: 2506.21263</div>
+      </div>
+    </div>
+
+    <!-- Right: Verification methods -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">Verification Methods</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+        <div class="card" style="padding:18px 22px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="background:var(--purple-soft);border:1px solid var(--purple-border);border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--purple)">TEE</div>
+            <div>
+              <div style="font-weight:600;font-size:15px">Trusted Execution</div>
+              <div style="font-size:13px;color:var(--text-3)">Sub-second finality · Hardware isolation</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 22px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="background:var(--purple-soft);border:1px solid var(--purple-border);border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--purple)">ZK</div>
+            <div>
+              <div style="font-weight:600;font-size:15px">ZKML Proofs</div>
+              <div style="font-size:13px;color:var(--text-3)">Cryptographic proof · No hardware trust</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 22px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="background:var(--purple-soft);border:1px solid var(--purple-border);border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--purple)">OPT</div>
+            <div>
+              <div style="font-weight:600;font-size:15px">Optimistic Rollups</div>
+              <div style="font-size:13px;color:var(--text-3)">Maximum throughput · Cost-efficient</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="source">Source: DiLoCoX arXiv:2506.21263 (with China Mobile) · 0G Compute architecture docs</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: 0G DA & CHAIN                                       -->
+<!-- ============================================================ -->
+<div class="slide center" data-notes="[10:00–11:40] 0G DA: 50 Gbps throughput on Galileo Testnet, 50,000x vs Ethereum Danksharding. 0G Chain: 11,000+ TPS per shard with 70+ Tier 1 validators, 0.8s block time, EVM-compatible. Solidity, Hardhat, Foundry — tools you already know.">
+  <span class="tag">0G DA & Chain</span>
+  <h2>Speed Without <strong class="accent">Compromise</strong></h2>
+  <p class="subtitle">The data highway and the settlement layer.</p>
+
+  <div class="card-grid cols-3 mt-32" style="max-width:900px">
+    <div class="card" style="text-align:center;padding:32px 24px">
+      <div class="card-title">DA Throughput</div>
+      <div style="font-family:var(--mono);font-size:44px;font-weight:700;color:var(--purple);letter-spacing:-1px">50</div>
+      <div style="font-family:var(--mono);font-size:18px;color:var(--purple);font-weight:600;margin-top:-4px">Gbps</div>
+      <div class="card-desc">Galileo Testnet benchmark</div>
+      <div class="card-source">0G Labs benchmark</div>
+    </div>
+    <div class="card" style="text-align:center;padding:32px 24px">
+      <div class="card-title">Chain TPS</div>
+      <div style="font-family:var(--mono);font-size:44px;font-weight:700;color:var(--purple);letter-spacing:-1px">11K+</div>
+      <div style="font-family:var(--mono);font-size:14px;color:var(--text-2);font-weight:500;margin-top:2px">per shard</div>
+      <div class="card-desc">70+ Tier 1 validators · Aristotle Mainnet</div>
+      <div class="card-source">Mainnet telemetry</div>
+    </div>
+    <div class="card" style="text-align:center;padding:32px 24px">
+      <div class="card-title">Finality</div>
+      <div style="font-family:var(--mono);font-size:44px;font-weight:700;color:var(--purple);letter-spacing:-1px">0.8s</div>
+      <div style="font-family:var(--mono);font-size:14px;color:var(--text-2);font-weight:500;margin-top:2px">block time</div>
+      <div class="card-desc">Sub-second finality</div>
+      <div class="card-source">Network metrics</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:16px;margin-top:28px;align-items:center">
+    <div class="pill">50,000× vs Eth Danksharding</div>
+    <span style="font-size:14px;color:var(--text-3)">EVM-compatible · Solidity · Hardhat · Foundry</span>
+  </div>
+
+  <div class="source">Source: 0G Galileo Testnet benchmarks · Aristotle Mainnet telemetry</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: IDENTITY & SOVEREIGNTY                              -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[11:40–13:20] x402 protocol for machine-to-machine payments launched with Google (Sept 2025), then AWS, Anthropic, Visa. ERC-7857 — intelligent NFTs — Ethereum standard for agent identity. AmericanFortress partnership for AI-native private transactions.">
+  <span class="tag">Identity & Sovereignty</span>
+  <h2>Agents Need <strong class="accent">Ownership</strong></h2>
+  <p class="subtitle">Not reputation. Math.</p>
+
+  <!-- Timeline connector -->
+  <div style="display:flex;align-items:stretch;gap:0;margin-top:36px;width:100%">
+    <div class="card" style="padding:28px 24px;flex:1;border-radius:12px 0 0 12px;border-right:none">
+      <div class="card-title">Machine Payments</div>
+      <div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--purple)">x402</div>
+      <div class="card-desc" style="margin-top:12px">Machine-to-machine payment protocol. Launched with Google (Sept 2025). AWS, Anthropic, Visa followed.</div>
+      <div class="card-source mt-12">x402.org</div>
+    </div>
+    <div style="width:2px;background:linear-gradient(var(--purple),var(--purple-light));flex-shrink:0"></div>
+    <div class="card" style="border-color:var(--purple-border);background:var(--purple-soft);padding:28px 24px;flex:1;border-radius:0;border-left:none;border-right:none">
+      <div class="card-title" style="color:var(--purple)">Agent Identity</div>
+      <div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--purple)">ERC-7857</div>
+      <div class="card-desc" style="margin-top:12px">Intelligent NFTs (iNFTs). Ethereum standard for on-chain agent identity and ownership.</div>
+      <div class="card-source mt-12">EIP-7857 Draft</div>
+    </div>
+    <div style="width:2px;background:linear-gradient(var(--purple),var(--purple-light));flex-shrink:0"></div>
+    <div class="card" style="padding:28px 24px;flex:1;border-radius:0 12px 12px 0;border-left:none">
+      <div class="card-title">Private Transactions</div>
+      <div style="font-size:18px;font-weight:700">AmericanFortress</div>
+      <div class="card-desc" style="margin-top:12px">AI-native private transaction stack. Built-in privacy, compliance, and cryptographic trust.</div>
+      <div class="card-source mt-12">0G × AmericanFortress (Jan 2026)</div>
+    </div>
+  </div>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:12px;letter-spacing:1px;text-transform:uppercase">Pay → Identify → Transact privately — a complete agent sovereignty stack</p>
+
+  <div class="source">Source: x402.org · EIP-7857 Draft · 0G Labs partnership announcements</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: INSTITUTIONAL VALIDATION                            -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[13:20–15:00] Aristotle Mainnet live since Sept 2025. $325M+ raised. 300+ ecosystem projects, 400+ integrations. ZeroStack Corp (NASDAQ). $88.88M builder incentives. $225B flowing to AI globally.">
+  <span class="tag">Institutional Validation</span>
+  <h2>Aristotle <strong class="accent">Mainnet</strong></h2>
+  <p class="subtitle">Live since September 2025. Production infrastructure.</p>
+
+  <div class="card-grid cols-3 mt-28">
+    <div class="card" style="text-align:center;padding:28px 20px">
+      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--purple);letter-spacing:-1px">$325M+</div>
+      <div class="card-desc" style="font-weight:500;margin-top:4px">Raised from tier-one investors</div>
+    </div>
+    <div class="card" style="text-align:center;padding:28px 20px">
+      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--purple);letter-spacing:-1px">400+</div>
+      <div class="card-desc" style="font-weight:500;margin-top:4px">Integrations across the stack</div>
+    </div>
+    <div class="card" style="text-align:center;padding:28px 20px">
+      <div style="font-family:var(--mono);font-size:36px;font-weight:700;color:var(--purple);letter-spacing:-1px">300+</div>
+      <div class="card-desc" style="font-weight:500;margin-top:4px">Ecosystem projects building</div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px">
+    <h3 style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600;margin-bottom:12px">Key Partners</h3>
+    <div class="partner-row">
+      <span class="partner-item">ZSTK (NASDAQ)</span>
+      <span class="partner-item">Coinbase Cloud</span>
+      <span class="partner-item">Alibaba Cloud</span>
+      <span class="partner-item">Google Cloud</span>
+      <span class="partner-item">Lido</span>
+      <span class="partner-item">Chainlink CCIP</span>
+    </div>
+  </div>
+
+  <div class="card mt-20" style="display:inline-flex;align-items:center;gap:16px;padding:16px 28px;border-color:var(--purple-border);background:var(--purple-soft)">
+    <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--purple)">$88.88M</div>
+    <div style="font-size:14px;font-weight:500;color:var(--text-2)">Builder incentives deployed via Guild 2.0</div>
+  </div>
+
+  <div class="source">Source: 0G Labs · CoinGecko · NASDAQ filings (ZSTK)</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: THE WATCHERS                                       -->
+<!-- ============================================================ -->
+<div class="slide" data-notes="[15:00–16:40] ~77% enterprises lack mature AI governance strategy (Deloitte). 80,000+ Alignment Nodes sold, $28M raised. Validated by NTT Docomo, Blockdaemon, Hex Trust, Figment, Alchemy, Coinbase Cloud.">
+  <span class="tag">The Watchers</span>
+  <h2><strong class="accent">80,000+</strong> Alignment Nodes</h2>
+  <p class="subtitle">Monitoring model drift, detecting bias, enforcing governance on-chain.</p>
+
+  <div class="two-col" style="margin-top:32px">
+    <!-- Left: Governance gap -->
+    <div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">The Governance Gap</h3>
+      <div class="card mt-16" style="padding:24px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="font-family:var(--mono);font-size:40px;font-weight:700;color:var(--red)">~77%</div>
+          <div style="font-size:14px;color:var(--text-2);line-height:1.5">of enterprises lack a mature<br>AI agent governance strategy</div>
+        </div>
+        <div style="margin-top:16px;height:8px;background:var(--bg-alt);border-radius:4px;overflow:hidden">
+          <div style="width:77%;height:100%;background:linear-gradient(90deg,var(--red),#F06060);border-radius:4px"></div>
+        </div>
+        <div class="card-source mt-12">Deloitte "State of AI in the Enterprise" 2025</div>
+      </div>
+
+      <div class="card mt-12" style="display:flex;align-items:center;gap:16px;padding:20px 24px">
+        <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--purple)">$28M+</div>
+        <div style="font-size:14px;color:var(--text-2)">Raised from node sales</div>
+      </div>
+    </div>
+
+    <!-- Right: Validators -->
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--purple);letter-spacing:-1px">70+</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text-2)">Tier 1 Validators</div>
+      </div>
+      <h3 style="font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--text-3);font-weight:600">Enterprise Validators</h3>
+      <div class="partner-row mt-16">
+        <span class="partner-item">NTT Docomo</span>
+        <span class="partner-item">Blockdaemon</span>
+        <span class="partner-item">Hex Trust</span>
+        <span class="partner-item">Figment</span>
+        <span class="partner-item">Coinbase Cloud</span>
+        <span class="partner-item">BitGo</span>
+      </div>
+      <div class="partner-row" style="margin-top:8px">
+        <span class="partner-item">Alchemy</span>
+        <span class="partner-item">QuickNode</span>
+        <span class="partner-item">Chorus One</span>
+        <span class="partner-item">Everstake</span>
+        <span class="partner-item">P2P.org</span>
+        <span class="partner-item">Nansen</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-3);margin-top:16px;line-height:1.5">These aren't crypto-native startups. These are enterprise infrastructure companies validating the network.</p>
+    </div>
+  </div>
+
+  <div class="source">Source: Deloitte "State of AI in the Enterprise" 2025 · 0G Labs node sale data · Validator announcements</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: TRUTH vs TRUST                                     -->
+<!-- ============================================================ -->
+<div class="slide center" data-notes="[16:40–18:20] Verification trilemma: integrity, latency, cost. Black-box AI sacrifices integrity. 0G balances all three: TEEs for latency, ZKML for integrity, optimistic rollups for cost. Every inference provable, every byte permanent, every action on-chain.">
+  <span class="tag">The Choice</span>
+  <h2>Truth <strong class="accent">vs.</strong> Trust</h2>
+
+  <table class="compare-table" style="margin-top:32px">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th class="col-legacy">Legacy / Black-Box</th>
+        <th class="col-0g">0G Verifiable Infra</th>
+        <th class="col-src">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Inference</td><td class="col-legacy">Trust the provider</td><td class="col-0g">Cryptographic proof (TEE/ZKML)</td><td class="col-src">0G Architecture</td></tr>
+      <tr><td>Training</td><td class="col-legacy">Closed, opaque</td><td class="col-0g">DiLoCoX 107B (arXiv)</td><td class="col-src">arXiv:2506.21263</td></tr>
+      <tr><td>Cost</td><td class="col-legacy">60–80% of opex (a16z)</td><td class="col-0g">80–90% reduction</td><td class="col-src">a16z / 0G Labs</td></tr>
+      <tr><td>Identity</td><td class="col-legacy">API keys + reputation</td><td class="col-0g">ERC-7857 iNFTs</td><td class="col-src">EIP-7857 Draft</td></tr>
+      <tr><td>Governance</td><td class="col-legacy">~77% no strategy (Deloitte)</td><td class="col-0g">80K+ Alignment Nodes</td><td class="col-src">Deloitte 2025</td></tr>
+    </tbody>
+  </table>
+
+  <div class="source">Sources cited per row: 0G Architecture · arXiv:2506.21263 · a16z · EIP-7857 Draft · Deloitte 2025</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: CTA (DARK)                                         -->
+<!-- ============================================================ -->
+<div class="slide dark center" data-notes="[18:20–20:00] $9.1B agentic market. $225B VC to AI. The answer: verifiable infrastructure. build.0g.ai: starter kits in TypeScript/Go. Guild 2.0: $88.88M incentives, 30+ projects from 850 apps. ETHDenver: Scaling Summit tomorrow, BASS Monday, booth Tue-Fri, Agentic Coding hackathon.">
+  <span class="tag">Build Now</span>
+  <h1 style="font-size:68px">Don't Trust. <strong class="accent">Verify.</strong></h1>
+  <div class="divider" style="margin:28px auto"></div>
+  <a class="cta-btn" href="https://build.0g.ai" target="_blank" style="pointer-events:auto">build.0g.ai</a>
+
+  <div style="display:flex;gap:20px;margin-top:40px">
+    <div class="dark-card" style="min-width:240px">
+      <h3>Agentic Coding</h3>
+      <p>Hackathon @ ETHDenver</p>
+    </div>
+    <div class="dark-card" style="min-width:240px">
+      <h3>Guild 2.0</h3>
+      <p>$88.88M Builder Incentives</p>
+    </div>
+  </div>
+
+  <p style="margin-top:32px;font-size:13px;color:rgba(254,254,254,0.3);font-family:var(--mono);letter-spacing:0.5px">
+    Scaling Summit (Tomorrow) &nbsp;·&nbsp; BASS Denver (Mon) &nbsp;·&nbsp; Booth + Office Hours (Tue–Fri)
+  </p>
+  <p style="margin-top:16px;font-size:12px;color:rgba(254,254,254,0.2);font-family:var(--mono)">
+    docs.0g.ai &nbsp;·&nbsp; chainscan.0g.ai &nbsp;·&nbsp; @0G_labs
+  </p>
+</div>
+
+<!-- ============================================================ -->
+<!-- CONTROLS                                                     -->
+<!-- ============================================================ -->
+<div class="slide-counter" id="counter">01 / 12</div>
+<button class="notes-toggle" id="notesToggle" onclick="toggleNotes()">N — Speaker Notes</button>
+<div class="notes-panel" id="notesPanel"><h4 id="notesTime"></h4><p id="notesContent"></p></div>
+<div class="nav"><button onclick="prev()">← Prev</button><button onclick="next()">Next →</button></div>
+
+<script>
+let current=0;
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+const progress=document.getElementById('progress');
+const counter=document.getElementById('counter');
+const notesPanel=document.getElementById('notesPanel');
+const notesContent=document.getElementById('notesContent');
+const notesTime=document.getElementById('notesTime');
+let notesVisible=false;
+
+function show(n){
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[n].classList.add('active');
+  progress.style.width=((n+1)/total*100)+'%';
+  counter.textContent=String(n+1).padStart(2,'0')+' / '+total;
+  const notes=slides[n].getAttribute('data-notes')||'';
+  const timeMatch=notes.match(/\[([^\]]+)\]/);
+  notesTime.textContent=timeMatch?timeMatch[1]:'';
+  notesContent.textContent=notes.replace(/\[[^\]]+\]\s*/,'');
+  const isDark=slides[n].classList.contains('dark');
+  document.querySelector('.og-logo').style.color=isDark?'rgba(254,254,254,0.7)':'rgba(10,10,10,0.65)';
+  counter.style.color=isDark?'rgba(254,254,254,0.2)':'var(--text-4)';
+  document.querySelectorAll('.nav button').forEach(b=>{
+    b.style.background=isDark?'rgba(255,255,255,0.06)':'';
+    b.style.borderColor=isDark?'rgba(255,255,255,0.1)':'';
+    b.style.color=isDark?'rgba(255,255,255,0.5)':'';
+  });
+  document.getElementById('notesToggle').style.background=isDark?'rgba(255,255,255,0.04)':'';
+  document.getElementById('notesToggle').style.borderColor=isDark?'rgba(255,255,255,0.1)':'';
+  document.getElementById('notesToggle').style.color=isDark?'rgba(255,255,255,0.3)':'';
+  progress.style.background=isDark?'var(--purple-light)':'var(--purple)';
+}
+
+function next(){if(current<total-1){current++;show(current)}}
+function prev(){if(current>0){current--;show(current)}}
+function toggleNotes(){
+  notesVisible=!notesVisible;
+  notesPanel.classList.toggle('visible',notesVisible);
+  document.getElementById('notesToggle').textContent=notesVisible?'N \u2014 Hide Notes':'N \u2014 Speaker Notes';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')next();
+  if(e.key==='ArrowLeft')prev();
+  if(e.key==='n'||e.key==='N')toggleNotes();
+  if(e.key==='f'||e.key==='F'){
+    if(!document.fullscreenElement)document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+show(0);
+</script>
+</body>
+</html>
